@@ -16,6 +16,7 @@ val logbackVersion = "1.2.3"
 val munitVersion = "1.0.0-M1"
 val munitCatsVersion = "1.0.0"
 val scalajsReactVersion = "2.0.0"
+val calicoVersion = "0.1.1"
 val monocleVersion = "3.1.0"
 
 val sharedSettings = Seq(
@@ -95,9 +96,11 @@ lazy val frontend = project
       "com.github.japgolly.scalajs-react" %%% "core-bundle-cats_effect" % scalajsReactVersion,
       "com.github.japgolly.scalajs-react" %%% "extra" % scalajsReactVersion,
       "com.github.japgolly.scalajs-react" %%% "extra-ext-monocle3" % scalajsReactVersion,
+      "com.armanbilge" %%% "calico" % calicoVersion,
       "org.http4s" %%% "http4s-dom" % http4sDomVersion,
       "org.http4s" %%% "http4s-client" % http4sVersion,
       "org.http4s" %%% "http4s-circe" % http4sVersion,
+      "dev.optics" %%% "monocle-core" % monocleVersion,
       "org.scala-js" %%% "scalajs-dom" % "2.0.0"
     ),
     webpack / version := "4.43.0",

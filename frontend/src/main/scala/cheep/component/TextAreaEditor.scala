@@ -1,33 +1,36 @@
 package cheep.component
 
-import japgolly.scalajs.react._
-import japgolly.scalajs.react.extra.StateSnapshot
-import japgolly.scalajs.react.vdom.html_<^._
+import calico.dsl.io.*
+import calico.syntax.*
+import cats.effect.IO
+import fs2.Stream
+import fs2.concurrent.SignallingRef
 
 object TextAreaEditor {
-  final case class Props(
+  def apply(
       name: String,
-      label: String,
-      rows: Option[Int],
-      cols: Option[Int],
-      text: StateSnapshot[String]
-  )
-
-  val component = ScalaComponent
-    .builder[Props]
-    .render_P(props =>
-      <.div(^.className := "py-2")(
-        <.div(<.label(^.`for` := props.name)(props.label)),
-        <.textarea(
-          ^.className := "rounded border-2 border-gray-300 focus:border-red-500 my-2 p-2",
-          ^.rows :=? props.rows,
-          ^.cols :=? props.cols,
-          ^.value := props.text.value,
-          ^.onChange ==> ((e: ReactEventFromInput) =>
-            props.text.setState(e.target.value)
-          )
+      _label: String,
+      _rows: Option[Int],
+      _cols: Option[Int],
+      text: SignallingRef[IO, String]
+  ) =
+    div(
+      cls := List("py-2"),
+      div(label(forId := name, _label)),
+      textArea(
+        value <-- text,
+        onChange --> (_.mapToTargetValue.foreach(text.set)),
+        rows <-- Stream.fromOption(_rows),
+        cols <-- Stream.fromOption(_cols),
+        cls := List(
+          "rounded",
+          "border-2",
+          "border-gray-300",
+          "focus:border-red-500",
+          "my-2",
+          "p-2"
         )
       )
     )
-    .build
+
 }

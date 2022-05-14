@@ -1,25 +1,19 @@
 package cheep.component
 
+import calico.dsl.io.*
 import cats.effect.IO
-import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.html_<^._
+import fs2.concurrent.Signal
 
 object SubmitButton {
-  final case class Props(label: String, active: Boolean, onClick: IO[Unit])
-
-  val component = ScalaComponent
-    .builder[Props]
-    .render_P { props =>
-      val css =
-        if (props.active)
-          "rounded p-2 bg-green-600 hover:bg-green-400 text-white"
-        else "rounded p-2 bg-gray-400 hover:bg-gray-400 text-white"
-      <.input.button(
-        ^.className := css,
-        ^.`type` := "button",
-        ^.value := props.label,
-        ^.onClick -->? (if (props.active) Some(props.onClick) else None)
-      )
-    }
-    .build
+  def apply(label: String, active: Signal[IO, Boolean], handler: IO[Unit]) =
+    val classes = List("rounded", "p-2", "hover:bg-green-400", "text-white")
+    input(
+      typ := "button",
+      value := label,
+      cls <-- active.map {
+        case true  => "bg-green-600" :: classes
+        case false => "bg-gray-400" :: classes
+      },
+      onClick --> (_.foreach(_ => handler))
+    )
 }

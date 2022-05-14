@@ -8,6 +8,10 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.extra.StateSnapshot
 import japgolly.scalajs.react.vdom.html_<^._
 
+import calico.dsl.io.*
+import cats.effect.IO
+import fs2.concurrent.SignallingRef
+
 object PostList {
   type Props = StateSnapshot[Posts]
 
@@ -27,6 +31,10 @@ object PostList {
 
     js.Dictionary("color" -> color)
   }
+
+  def apply(posts: SignallingRef[IO, Posts]) =
+    
+    ???
 
   val component = ScalaComponent
     .builder[Props]
